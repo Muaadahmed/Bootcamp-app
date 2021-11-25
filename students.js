@@ -9,13 +9,15 @@ const pool = new Pool({
 
 const cmdsCohort = process.argv.slice(2);
 
+const values = [`%${cmdsCohort[0]}%`, cmdsCohort[1]]
+
 pool.query(`
 SELECT students.id as student_id, students.name as name, cohorts.name as cohort
 FROM students
 JOIN cohorts ON cohorts.id = cohort_id
-WHERE cohorts.name LIKE '%${cmdsCohort[0]}%'
-LIMIT ${cmdsCohort[1]};
-`)
+WHERE cohorts.name LIKE $1
+LIMIT $2;
+`, values)
 .then(res => {
   console.log('-------------SQL Query Result----------');
   res.rows.forEach(user => {
